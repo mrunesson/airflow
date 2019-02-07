@@ -191,3 +191,20 @@ class KubernetesRequestFactory:
     def extract_tolerations(pod, req):
         if pod.tolerations:
             req['spec']['tolerations'] = pod.tolerations
+
+    @staticmethod
+    def extract_security_context(pod, req):
+        if pod.security_context:
+            pod_sc = pod.security_context
+            req_sc = {}
+            if sc.run_as_non_root:
+                rec_sc['runAsNonRoot'] = pod_sc.run_as_non_root
+            if sc.read_only_root_filesystem:
+                rec_sc['readOnlyRootFilesystem'] = pod_sc.read_only_root_filesystem
+            if sc.run_as_user:
+                rec_sc['runAsUser'] = pod_sc.run_as_user
+            if sc.run_as_group:
+                rec_sc['runAsGroup'] = pod_sc.run_as_group
+            if sc.fs_group:
+                rec_sc['fsGroup'] = pod_sc.fs_group
+        req['spec']['securityContext'] = req_sc
